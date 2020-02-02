@@ -1,5 +1,6 @@
 class Bud
 {
+    branch : Branch; // branche that own this bud
     pos : p5.Vector;
     dir : number = 0.0;
     radius : number = 0.0;

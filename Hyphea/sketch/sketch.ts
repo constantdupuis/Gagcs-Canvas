@@ -1,7 +1,6 @@
 
 class myBudDrawer extends BudDrawer
 {
-
     colorScale : chroma.Scale;
 
     init()
@@ -18,14 +17,17 @@ class myBudDrawer extends BudDrawer
     }
 }
 
-let b : Branche;
+let b : Branch;
+let g : Ground;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
     background(45, 33, 46);
-    b = new Branche(createVector(windowWidth/2.0, windowHeight*0.8), -HALF_PI, 10.0);
+    g = new Ground();
+    b = new Branch(createVector(windowWidth/2.0, windowHeight*0.8), -HALF_PI, 10.0);
     b.budDrawer = new myBudDrawer();
     b.budDrawer.init();
+    b.setGround( g );
 }
 
 function draw() {

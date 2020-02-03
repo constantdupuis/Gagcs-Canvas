@@ -5,7 +5,7 @@ class BudDrawer{
   init()
   {}
 
-  draw( b : Bud)
+  draw( b : Bud, c : chroma.Color)
   {
       fill(122, 126, 93);
       noStroke();

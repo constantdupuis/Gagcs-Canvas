@@ -1,5 +1,5 @@
 var Branch = (function () {
-    function Branch(pos, dir, radius, life, generation) {
+    function Branch(pos, dir, radius, maxLife, generation) {
         this.ground = null;
         this.parentBranch = null;
         this.dir = 0.0;
@@ -16,7 +16,7 @@ var Branch = (function () {
         this.rootPos = pos;
         this.dir = dir;
         this.radius = radius;
-        this.maxLife = life;
+        this.maxLife = maxLife;
         this.life = 0;
         this.generation = generation;
     }
@@ -48,9 +48,13 @@ var Branch = (function () {
             this.lastBud = newBud;
             this.budDrawer.draw(newBud, this.ground.colorScale((this.idx % 10.0) / 10.0));
         }
+        if (this.lastBud.pos.x < 0 || this.lastBud.pos.x > windowWidth ||
+            this.lastBud.pos.y < 0 || this.lastBud.pos.y > windowHeight) {
+            this.growing = false;
+        }
         if (this.life >= this.maxLife)
             this.growing = false;
-        if (this.buds.length == 20 && this.generation < 3) {
+        if (this.life % 20 == 0) {
             var dir = (random(0.0, 6.0) < 3.0 ? -1.0 : 1.0);
             var newB = new Branch(this.lastBud.pos, this.lastBud.dir + (QUARTER_PI * dir), this.lastBud.radius, this.maxLife / 2.0, this.generation + 1);
             this.ground.addBranch(newB);
@@ -103,12 +107,13 @@ var Ground = (function () {
     Ground.prototype.toClose = function (b) {
         for (var i = 0; i < this.allBranches.length; i++) {
             var br = this.allBranches[i];
-            if (br == b.branch) {
+            if (br.idx == b.branch.idx) {
                 if (br.buds.length > 10) {
                     for (var y = 0; y < br.buds.length - 10; y++) {
                         var bu = br.buds[y];
-                        if (p5.Vector.dist(b.pos, bu.pos) < 15.0) {
-                            console.log("Branch " + b.branch.idx + " to close of branch " + br.idx);
+                        if (p5.Vector.dist(b.pos, bu.pos) < 10.0) {
+                            console.log("1 Branch " + b.branch.idx + " to close from parent branch " + br.idx);
+                            console.log("current branche id " + br.idx + " bud branch id " + b.branch.idx);
                             return true;
                         }
                     }
@@ -117,23 +122,25 @@ var Ground = (function () {
                     return false;
                 }
             }
-            else if (br == b.branch.parentBranch) {
+            else if (br.idx == b.branch.parentBranch.idx) {
                 var budRootIndex = b.branch.rootBudIdx;
                 if (budRootIndex < 10) {
                     return false;
                 }
-                else if (budRootIndex > 10 && budRootIndex < br.buds.length - 10) {
-                    for (var y = 0; y < budRootIndex - 10; y++) {
+                else if (budRootIndex > 10 && budRootIndex < br.buds.length - 5) {
+                    for (var y = 0; y < budRootIndex - 5; y++) {
                         var bu = br.buds[y];
-                        if (p5.Vector.dist(b.pos, bu.pos) < 15.0) {
-                            console.log("Branch " + b.branch.idx + " to close of branch " + br.idx);
+                        if (p5.Vector.dist(b.pos, bu.pos) < 20.0) {
+                            console.log("2 Branch " + b.branch.idx + " to close from grand parent branch " + br.idx);
+                            console.log("current branch " + br.idx + ", curretn bud " + b.idx + " bud branch " + b.branch.idx + ", parent branch " + b.branch.parentBranch.idx);
                             return true;
                         }
                     }
                     for (var y = budRootIndex + 10; y < br.buds.length; y++) {
                         var bu = br.buds[y];
-                        if (p5.Vector.dist(b.pos, bu.pos) < 15.0) {
-                            console.log("Branch " + b.branch.idx + " to close of branch " + br.idx);
+                        if (p5.Vector.dist(b.pos, bu.pos) < 20.0) {
+                            console.log("3 Branch " + b.branch.idx + " to close from grand parent branch " + br.idx);
+                            console.log("current branch " + br.idx + ", curretn bud " + b.idx + " bud branch " + b.branch.idx + ", parent branch " + b.branch.parentBranch.idx);
                             return true;
                         }
                     }
@@ -143,7 +150,8 @@ var Ground = (function () {
                 for (var y = 0; y < br.buds.length; y++) {
                     var bu = br.buds[y];
                     if (p5.Vector.dist(b.pos, bu.pos) < 15.0) {
-                        console.log("Branch " + b.branch.idx + " to close of branch " + br.idx);
+                        console.log("3 Branch " + b.branch.idx + " to close of branch " + br.idx);
+                        console.log("current branche id " + br.idx + " bud branch id " + b.branch.idx);
                         return true;
                     }
                 }
@@ -187,7 +195,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     background(45, 33, 46);
     g = new Ground();
-    b = new Branch(createVector(windowWidth * 1 / 2, windowHeight * 1 / 2), -HALF_PI, 5.0, 250, 0);
+    b = new Branch(createVector(windowWidth * 1 / 2, windowHeight * 1 / 2), -HALF_PI, 5.0, 100, 0);
     b.budDrawer = new myBudDrawer();
     b.budDrawer.init();
     g.addBranch(b);

@@ -25,7 +25,7 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     background(45, 33, 46);
     g = new Ground();
-    b = new Branch(createVector(windowWidth*1/2, windowHeight*1/2), -HALF_PI, 5.0, 250, 0);
+    b = new Branch(createVector(windowWidth*1/2, windowHeight*1/2), -HALF_PI, 5.0, 100, 0);
     b.budDrawer = new myBudDrawer();
     b.budDrawer.init();
     g.addBranch(b);

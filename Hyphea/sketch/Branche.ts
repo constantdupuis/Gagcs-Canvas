@@ -16,12 +16,12 @@ class Branch
     generation : number = 0;
     rootBudIdx : number = -1;
 
-    constructor( pos : p5.Vector, dir : number, radius: number, life : number, generation: number)
+    constructor( pos : p5.Vector, dir : number, radius: number, maxLife : number, generation: number)
     {
         this.rootPos = pos;
         this.dir = dir;
         this.radius = radius;
-        this.maxLife = life;
+        this.maxLife = maxLife;
         this.life = 0;
         this.generation = generation;
     }
@@ -73,6 +73,12 @@ class Branch
             this.budDrawer.draw(newBud, this.ground.colorScale((this.idx%10.0)/10.0));
         }
 
+        if( this.lastBud.pos.x < 0 || this.lastBud.pos.x > windowWidth || 
+            this.lastBud.pos.y < 0 || this.lastBud.pos.y > windowHeight)
+            {
+                this.growing = false;
+            }
+
         // if maxium buds reach stop growing
         if( this.life >= this.maxLife) this.growing = false;
         //if( this.generation >= 3) this.growing = false;
@@ -80,10 +86,10 @@ class Branch
 
         // every x buds, create a sub branch
         //if( this.life % floor(this.maxLife/4.0) == 0 )
-        if( this.buds.length == 20 && this.generation < 3)
+        if( this.life % 20 == 0 )
         {
             let dir = (random(0.0, 6.0) < 3.0 ?-1.0:1.0);
-            let newB = new Branch(this.lastBud.pos, this.lastBud.dir + (QUARTER_PI *dir), this.lastBud.radius, this.maxLife / 2.0, this.generation+1);
+            let newB = new Branch(this.lastBud.pos, this.lastBud.dir + (QUARTER_PI * dir), this.lastBud.radius, this.maxLife / 2.0, this.generation+1);
             this.ground.addBranch(newB);
             
             newB.rootBudIdx = this.lastBud.idx;

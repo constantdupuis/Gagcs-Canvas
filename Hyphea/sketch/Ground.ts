@@ -31,17 +31,21 @@ class Ground
     {
       let br = this.allBranches[i];
 
+      //console.log(`current branche id ${br.idx} bud branch id ${b.branch.idx}`);
+
       // bud owned by the current branch to test
-      if( br == b.branch)
+      if( br.idx == b.branch.idx)
       {
         if(br.buds.length > 10)
         {
           for( let y = 0; y < br.buds.length-10; y++)
           {
             let bu = br.buds[y];
-            if( p5.Vector.dist(b.pos, bu.pos) < 15.0) 
+            if( p5.Vector.dist(b.pos, bu.pos) < 10.0) 
             {
-              console.log(`Branch ${b.branch.idx} to close of branch ${br.idx}`);
+              console.log(`1 Branch ${b.branch.idx} to close from parent branch ${br.idx}`);
+              console.log(`current branche id ${br.idx} bud branch id ${b.branch.idx}`);
+              //console.log(this.allBranches);
               return true;
             }
           }
@@ -51,22 +55,24 @@ class Ground
           return false;
         }
       }
-      else if( br == b.branch.parentBranch) // check if branch is grand mother of the bud branch 
+      else if( br.idx == b.branch.parentBranch.idx) // check if branch is grand mother of the bud branch 
       {
         let budRootIndex = b.branch.rootBudIdx;
         if( budRootIndex < 10 )
         {
           return false;
         }
-        else if(budRootIndex > 10 && budRootIndex < br.buds.length - 10)
+        else if(budRootIndex > 10 && budRootIndex < br.buds.length - 5)
         {
           // search before bud branching idx
-          for( let y = 0; y < budRootIndex-10; y++)
+          for( let y = 0; y < budRootIndex-5; y++)
           {
             let bu = br.buds[y];
-            if( p5.Vector.dist(b.pos, bu.pos) < 15.0) 
+            if( p5.Vector.dist(b.pos, bu.pos) < 20.0) 
             {
-              console.log(`Branch ${b.branch.idx} to close of branch ${br.idx}`);
+              console.log(`2 Branch ${b.branch.idx} to close from grand parent branch ${br.idx}`);
+              console.log(`current branch ${br.idx}, curretn bud ${b.idx} bud branch ${b.branch.idx}, parent branch ${b.branch.parentBranch.idx}`);
+              //console.log(this.allBranches);
               return true;
             }
           }
@@ -75,9 +81,11 @@ class Ground
           for( let y = budRootIndex+10; y < br.buds.length; y++)
           {
             let bu = br.buds[y];
-            if( p5.Vector.dist(b.pos, bu.pos) < 15.0) 
+            if( p5.Vector.dist(b.pos, bu.pos) < 20.0) 
             {
-              console.log(`Branch ${b.branch.idx} to close of branch ${br.idx}`);
+              console.log(`3 Branch ${b.branch.idx} to close from grand parent branch ${br.idx}`);
+              console.log(`current branch ${br.idx}, curretn bud ${b.idx} bud branch ${b.branch.idx}, parent branch ${b.branch.parentBranch.idx}`);
+              //console.log(this.allBranches);
               return true;
             }
           }
@@ -90,7 +98,8 @@ class Ground
           let bu = br.buds[y];
           if( p5.Vector.dist(b.pos, bu.pos) < 15.0)
           {
-            console.log(`Branch ${b.branch.idx} to close of branch ${br.idx}`);
+            console.log(`3 Branch ${b.branch.idx} to close of branch ${br.idx}`);
+            console.log(`current branche id ${br.idx} bud branch id ${b.branch.idx}`);
             return true;
           } 
         }

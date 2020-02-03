@@ -8,12 +8,13 @@ class myBudDrawer extends BudDrawer
         this.colorScale = chroma.scale(['#fafa6e','#2A4858']);
     }
 
-    draw( b : Bud)
+    draw( b : Bud, c : chroma.Color)
     {
-        let color : chroma.Color = this.colorScale(0.5 + randomGaussian(0,0.2));
-        fill(color.rgb());
+        //let color : chroma.Color = this.colorScale(0.5 + randomGaussian(0,0.2));
+        fill(c.rgb());
         noStroke();
-        circle(b.pos.x, b.pos.y, b.radius+ randomGaussian(0,2.0));
+        //circle(b.pos.x, b.pos.y, b.radius+ randomGaussian(0,2.0));
+        circle(b.pos.x, b.pos.y, b.radius);
     }
 }
 
@@ -24,10 +25,11 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     background(45, 33, 46);
     g = new Ground();
-    b = new Branch(createVector(windowWidth/2.0, windowHeight*0.8), -HALF_PI, 10.0);
+    b = new Branch(createVector(windowWidth*1/2, windowHeight*1/2), -HALF_PI, 5.0, 250, 0);
     b.budDrawer = new myBudDrawer();
     b.budDrawer.init();
-    b.setGround( g );
+    g.addBranch(b);
+    //b.setGround( g );
 }
 
 function draw() {

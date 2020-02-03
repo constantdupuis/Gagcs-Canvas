@@ -4,6 +4,7 @@ class Bud
     pos : p5.Vector;
     dir : number = 0.0;
     radius : number = 0.0;
+    idx : number;
 
     constructor( pos : p5.Vector, dir : number, radius : number)
     {

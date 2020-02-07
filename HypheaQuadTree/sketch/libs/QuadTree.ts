@@ -3,14 +3,14 @@
  */
 type cbQuadTreeGen<T extends IPosisionable> = (qtree: QuadTree<T>) => void;
 type cbPosisionable = (p: IPosisionable) => void;
-type cbBoundaries = (r: Boundary) => void;
+type cbBoundaries = (r: BoundarySquare) => void;
 
 /**
  * Generique QuadTree
  */
 class QuadTree<T extends IPosisionable> {
   points: IPosisionable[] = [];
-  boundary: Boundary;
+  boundary: BoundarySquare;
   capacity: number = 4;
 
   subdivided: boolean = false;
@@ -25,7 +25,7 @@ class QuadTree<T extends IPosisionable> {
    * @param boundary Area covered by this QuadTree node
    * @param capacity How many points this QuadTree node can contain
    */
-  constructor(boundary: Boundary, capacity: number) {
+  constructor(boundary: BoundarySquare, capacity: number) {
     this.boundary = boundary;
     this.capacity = capacity;
   }
@@ -64,7 +64,7 @@ class QuadTree<T extends IPosisionable> {
    * Query for points in a given area
    * @param range Area to look for points
    */
-  query(range: Boundary): IPosisionable[] {
+  query(range: BoundarySquare): IPosisionable[] {
     let found: IPosisionable[] = [];
     return this.innerQuery(range, found);
   }
@@ -74,7 +74,7 @@ class QuadTree<T extends IPosisionable> {
    * @param range Area to look for points
    * @param found Array of points to fill with founded point, if null a array will be created
    */
-  private innerQuery(range: Boundary, found: IPosisionable[]): IPosisionable[] {
+  private innerQuery(range: BoundarySquare, found: IPosisionable[]): IPosisionable[] {
     if (found == null) {
       found = [];
     }
@@ -111,22 +111,22 @@ class QuadTree<T extends IPosisionable> {
       let newHeight = this.boundary.h / 2.0;
 
       this.topLeft = new QuadTree<T>(
-        new Boundary(x, y, newWidth, newHeight),
+        new BoundarySquare(x, y, newWidth, newHeight),
         this.capacity
       );
 
       this.topRight = new QuadTree<T>(
-        new Boundary(x + newWidth, y, newWidth, newHeight),
+        new BoundarySquare(x + newWidth, y, newWidth, newHeight),
         this.capacity
       );
 
       this.bottomLeft = new QuadTree<T>(
-        new Boundary(x, y + newHeight, newWidth, newHeight),
+        new BoundarySquare(x, y + newHeight, newWidth, newHeight),
         this.capacity
       );
 
       this.bottomRight = new QuadTree<T>(
-        new Boundary(x + newWidth, y + newHeight, newWidth, newHeight),
+        new BoundarySquare(x + newWidth, y + newHeight, newWidth, newHeight),
         this.capacity
       );
     }

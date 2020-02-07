@@ -1,9 +1,5 @@
-interface IArea {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
+interface IBoundary extends IPosisionable{
 
   contains(p: IPosisionable): boolean;
-  intersects(r: IArea): boolean;
+  intersects(r: IBoundary): boolean;
 }

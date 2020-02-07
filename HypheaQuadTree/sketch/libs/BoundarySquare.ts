@@ -1,7 +1,7 @@
 /**
  * Rectangle class
  */
-class Boundary implements IArea {
+class BoundarySquare implements IBoundary {
   x: number;
   y: number;
   w: number;
@@ -40,7 +40,7 @@ class Boundary implements IArea {
    * Check if r intersects with this rectangle
    * @param r Rectangle to check intersection with
    */
-  intersects(r: Boundary): boolean {
+  intersects(r: BoundarySquare): boolean {
     if (
       r.x > this.x + this.w ||
       r.y > this.y + this.h ||

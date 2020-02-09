@@ -1,15 +1,15 @@
 /**
  * Tpe definition for callback functions
  */
-type cbQuadTreeGen<T extends IPosisionable> = (qtree: QuadTree<T>) => void;
-type cbPosisionable = (p: IPosisionable) => void;
+type cbQuadTreeGen<T extends IPoint> = (qtree: QuadTree<T>) => void;
+type cbPosisionable = (p: IPoint) => void;
 type cbBoundaries = (r: BoundarySquare) => void;
 
 /**
  * Generique QuadTree
  */
-class QuadTree<T extends IPosisionable> {
-  points: IPosisionable[] = [];
+class QuadTree<T extends IPoint> {
+  points: IPoint[] = [];
   boundary: BoundarySquare;
   capacity: number = 4;
 
@@ -34,7 +34,7 @@ class QuadTree<T extends IPosisionable> {
    * Insert a poin in this QuadTree node
    * @param p Point to insert in the QuadTree node
    */
-  insert(p: IPosisionable): boolean {
+  insert(p: IPoint): boolean {
     if (!this.boundary.contains(p)) {
       return false;
     }
@@ -64,8 +64,8 @@ class QuadTree<T extends IPosisionable> {
    * Query for points in a given area
    * @param range Area to look for points
    */
-  query(range: BoundarySquare): IPosisionable[] {
-    let found: IPosisionable[] = [];
+  query(range: BoundarySquare): IPoint[] {
+    let found: IPoint[] = [];
     return this.innerQuery(range, found);
   }
 
@@ -74,14 +74,14 @@ class QuadTree<T extends IPosisionable> {
    * @param range Area to look for points
    * @param found Array of points to fill with founded point, if null a array will be created
    */
-  private innerQuery(range: BoundarySquare, found: IPosisionable[]): IPosisionable[] {
+  private innerQuery(range: BoundarySquare, found: IPoint[]): IPoint[] {
     if (found == null) {
       found = [];
     }
 
     if (!this.boundary.intersects(range)) return found;
 
-    this.points.forEach((p: IPosisionable) => {
+    this.points.forEach((p: IPoint) => {
       if (range.contains(p)) {
         found.push(p);
       }

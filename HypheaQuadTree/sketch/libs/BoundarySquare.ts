@@ -24,7 +24,7 @@ class BoundarySquare implements IBoundary {
    * Check if a point in inside the rectangle, borders included
    * @param p Point to check
    */
-  contains(p: IPosisionable): boolean {
+  contains(p: IPoint): boolean {
     if (
       p.x >= this.x &&
       p.x <= this.x + this.w &&

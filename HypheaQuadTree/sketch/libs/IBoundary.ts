@@ -1,5 +1,4 @@
-interface IBoundary extends IPosisionable{
-
-  contains(p: IPosisionable): boolean;
+interface IBoundary extends IPoint {
+  contains(p: IPoint): boolean;
   intersects(r: IBoundary): boolean;
 }

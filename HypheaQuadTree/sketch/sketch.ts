@@ -1,9 +1,16 @@
+class Branch {
+  parentBranch: Branch = null;
+  rootParticle: Particle = null;
+  lastParticle: Particle = null;
+}
+
 /**
- * Particle object that can be used by QuadTree (impenments IPosisionable 
+ * Particle object that can be used by QuadTree (impenments IPosisionable
  */
-class Particle implements IPosisionable {
-  x: number;
-  y: number;
+class Particle implements IPoint {
+  x: number = 0.0;
+  y: number = 0.0;
+  branch: Branch = null;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -28,9 +35,6 @@ function setup() {
     new BoundarySquare(0, 0, windowWidth, windowHeight),
     8
   );
-
-
-
 }
 
 /**
@@ -38,8 +42,4 @@ function setup() {
  */
 function draw() {
   background("#2D142C");
-
-  
-
-  
 }

@@ -3,14 +3,14 @@
  */
 type cbQuadTreeGen<T extends IPoint> = (qtree: QuadTree<T>) => void;
 type cbPosisionable = (p: IPoint) => void;
-type cbBoundaries = (r: BoundarySquare) => void;
+type cbBoundaries = (r: BoundaryRectangle) => void;
 
 /**
  * Generique QuadTree
  */
 class QuadTree<T extends IPoint> {
   points: IPoint[] = [];
-  boundary: BoundarySquare;
+  boundary: BoundaryRectangle;
   capacity: number = 4;
 
   subdivided: boolean = false;
@@ -25,7 +25,7 @@ class QuadTree<T extends IPoint> {
    * @param boundary Area covered by this QuadTree node
    * @param capacity How many points this QuadTree node can contain
    */
-  constructor(boundary: BoundarySquare, capacity: number) {
+  constructor(boundary: BoundaryRectangle, capacity: number) {
     this.boundary = boundary;
     this.capacity = capacity;
   }
@@ -34,7 +34,7 @@ class QuadTree<T extends IPoint> {
    * Insert a poin in this QuadTree node
    * @param p Point to insert in the QuadTree node
    */
-  insert(p: IPoint): boolean {
+  insert(p: T): boolean {
     if (!this.boundary.contains(p)) {
       return false;
     }
@@ -64,8 +64,8 @@ class QuadTree<T extends IPoint> {
    * Query for points in a given area
    * @param range Area to look for points
    */
-  query(range: BoundarySquare): IPoint[] {
-    let found: IPoint[] = [];
+  query(range: BoundaryRectangle): T[] {
+    let found: T[] = [];
     return this.innerQuery(range, found);
   }
 
@@ -74,14 +74,14 @@ class QuadTree<T extends IPoint> {
    * @param range Area to look for points
    * @param found Array of points to fill with founded point, if null a array will be created
    */
-  private innerQuery(range: BoundarySquare, found: IPoint[]): IPoint[] {
+  private innerQuery(range: BoundaryRectangle, found: T[]): T[] {
     if (found == null) {
       found = [];
     }
 
     if (!this.boundary.intersects(range)) return found;
 
-    this.points.forEach((p: IPoint) => {
+    this.points.forEach((p: T) => {
       if (range.contains(p)) {
         found.push(p);
       }
@@ -111,22 +111,22 @@ class QuadTree<T extends IPoint> {
       let newHeight = this.boundary.h / 2.0;
 
       this.topLeft = new QuadTree<T>(
-        new BoundarySquare(x, y, newWidth, newHeight),
+        new BoundaryRectangle(x, y, newWidth, newHeight),
         this.capacity
       );
 
       this.topRight = new QuadTree<T>(
-        new BoundarySquare(x + newWidth, y, newWidth, newHeight),
+        new BoundaryRectangle(x + newWidth, y, newWidth, newHeight),
         this.capacity
       );
 
       this.bottomLeft = new QuadTree<T>(
-        new BoundarySquare(x, y + newHeight, newWidth, newHeight),
+        new BoundaryRectangle(x, y + newHeight, newWidth, newHeight),
         this.capacity
       );
 
       this.bottomRight = new QuadTree<T>(
-        new BoundarySquare(x + newWidth, y + newHeight, newWidth, newHeight),
+        new BoundaryRectangle(x + newWidth, y + newHeight, newWidth, newHeight),
         this.capacity
       );
     }

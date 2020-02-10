@@ -1,18 +1,119 @@
-var Particle = (function () {
-    function Particle(x, y) {
+var Branch = (function () {
+    function Branch(qtree, posx, posy, dir, life, branchingFreq, branchingLifeFactor) {
+        this.parentBranch = null;
+        this.rootParticle = null;
+        this.lastParticle = null;
+        this.qtree = null;
+        this.buds = [];
+        this.childBranches = [];
+        this.timeToLive = 100;
+        this.currentLife = 0;
+        this.growing = true;
+        this.branchingFreq = 0;
+        this.branchingLifeFactor = 0.5;
+        this.qtree = qtree;
+        this.timeToLive = life;
+        this.currentLife = 0;
+        this.branchingFreq = branchingFreq;
+        this.branchingLifeFactor = branchingLifeFactor;
+        this.rootParticle = new Bud(posx, posy, dir, this);
+        this.lastParticle = null;
+        this.qtree.insert(this.rootParticle);
+        this.buds.push(this.rootParticle);
+        drawParticle(this.rootParticle);
+    }
+    Branch.prototype.grow = function () {
+        var _this = this;
+        this.childBranches.forEach(function (b) { return b.grow(); });
+        if (this.currentLife > this.timeToLive) {
+            this.growing = false;
+        }
+        if (!this.growing) {
+            return false;
+        }
+        var newPos;
+        var reference;
+        if (this.lastParticle == null) {
+            reference = this.rootParticle;
+        }
+        else {
+            reference = this.lastParticle;
+        }
+        newPos = p5.Vector.fromAngle(reference.dir + randomGaussian(0.0, QUARTER_PI / 4.0), 3.0);
+        newPos = createVector(reference.x, reference.y).add(newPos);
+        var near = this.qtree.query(new BoundaryRectangle(newPos.x - 15, newPos.y - 15, 30, 30));
+        near = near.filter(function (p) {
+            if (p.branch === _this)
+                return false;
+            for (var i = 0; i < _this.childBranches.length; i++) {
+                var cb = _this.childBranches[i];
+                if (p.branch === cb)
+                    return false;
+            }
+            if (p.branch.parentBranch != null) {
+                if (p.branch.parentBranch === _this)
+                    return false;
+            }
+            return true;
+        });
+        var toClose = false;
+        for (var i = 0; i < near.length; i++) {
+            var p = near[i];
+            if (p5.Vector.dist(createVector(p.x, p.y), createVector(newPos.x, newPos.y)) < 10.0) {
+                console.log("To close");
+                toClose = true;
+                break;
+            }
+        }
+        if (toClose) {
+            this.growing = false;
+            return false;
+        }
+        var newParticle = new Bud(newPos.x, newPos.y, reference.dir, this);
+        this.lastParticle = newParticle;
+        this.qtree.insert(newParticle);
+        this.buds.push(newParticle);
+        drawParticle(newParticle);
+        if (this.currentLife >= this.branchingFreq && this.currentLife % this.branchingFreq == 0) {
+            var newBranche = new Branch(this.qtree, newParticle.x, newParticle.y, newParticle.dir + QUARTER_PI, this.timeToLive * this.branchingLifeFactor, this.branchingFreq, this.branchingLifeFactor);
+            this.childBranches.push(newBranche);
+            newBranche.parentBranch = this;
+        }
+        this.currentLife++;
+        return true;
+    };
+    return Branch;
+}());
+var Bud = (function () {
+    function Bud(x, y, dir, parent) {
+        this.x = 0.0;
+        this.y = 0.0;
+        this.branch = null;
+        this.radius = 3;
         this.x = x;
         this.y = y;
+        this.dir = dir;
+        this.branch = parent;
     }
-    return Particle;
+    return Bud;
 }());
 var qtree;
+var roots = [];
 function setup() {
     createCanvas(windowWidth, windowHeight);
     background("#2D142C");
-    qtree = new QuadTree(new BoundarySquare(0, 0, windowWidth, windowHeight), 8);
+    qtree = new QuadTree(new BoundaryRectangle(0, 0, windowWidth, windowHeight), 8);
+    roots[0] = new Branch(qtree, windowWidth / 2.0, windowHeight / 2.0, -PI / 2.0, 100, 10, 0.5);
 }
 function draw() {
-    background("#2D142C");
+    roots.forEach(function (root) {
+        root.grow();
+    });
+}
+function drawParticle(p) {
+    noStroke();
+    fill('white');
+    circle(p.x, p.y, p.radius * 2.0);
 }
 var BoundaryCircle = (function () {
     function BoundaryCircle(x, y, r) {
@@ -21,33 +122,21 @@ var BoundaryCircle = (function () {
         this.r = r;
     }
     BoundaryCircle.prototype.contains = function (p) {
-        if (p.x >= this.x &&
-            p.x <= this.x + this.w &&
-            p.y >= this.y &&
-            p.y <= this.y + this.h) {
-            return true;
-        }
         return false;
     };
     BoundaryCircle.prototype.intersects = function (r) {
-        if (r.x > this.x + this.w ||
-            r.y > this.y + this.h ||
-            r.x + r.w < this.x ||
-            r.y + r.h < this.y) {
-            return false;
-        }
         return true;
     };
     return BoundaryCircle;
 }());
-var BoundarySquare = (function () {
-    function BoundarySquare(x, y, w, h) {
+var BoundaryRectangle = (function () {
+    function BoundaryRectangle(x, y, w, h) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
     }
-    BoundarySquare.prototype.contains = function (p) {
+    BoundaryRectangle.prototype.contains = function (p) {
         if (p.x >= this.x &&
             p.x <= this.x + this.w &&
             p.y >= this.y &&
@@ -56,7 +145,7 @@ var BoundarySquare = (function () {
         }
         return false;
     };
-    BoundarySquare.prototype.intersects = function (r) {
+    BoundaryRectangle.prototype.intersects = function (r) {
         if (r.x > this.x + this.w ||
             r.y > this.y + this.h ||
             r.x + r.w < this.x ||
@@ -65,7 +154,7 @@ var BoundarySquare = (function () {
         }
         return true;
     };
-    return BoundarySquare;
+    return BoundaryRectangle;
 }());
 var QuadTree = (function () {
     function QuadTree(boundary, capacity) {
@@ -137,10 +226,10 @@ var QuadTree = (function () {
             var y = this.boundary.y;
             var newWidth = this.boundary.w / 2.0;
             var newHeight = this.boundary.h / 2.0;
-            this.topLeft = new QuadTree(new BoundarySquare(x, y, newWidth, newHeight), this.capacity);
-            this.topRight = new QuadTree(new BoundarySquare(x + newWidth, y, newWidth, newHeight), this.capacity);
-            this.bottomLeft = new QuadTree(new BoundarySquare(x, y + newHeight, newWidth, newHeight), this.capacity);
-            this.bottomRight = new QuadTree(new BoundarySquare(x + newWidth, y + newHeight, newWidth, newHeight), this.capacity);
+            this.topLeft = new QuadTree(new BoundaryRectangle(x, y, newWidth, newHeight), this.capacity);
+            this.topRight = new QuadTree(new BoundaryRectangle(x + newWidth, y, newWidth, newHeight), this.capacity);
+            this.bottomLeft = new QuadTree(new BoundaryRectangle(x, y + newHeight, newWidth, newHeight), this.capacity);
+            this.bottomRight = new QuadTree(new BoundaryRectangle(x + newWidth, y + newHeight, newWidth, newHeight), this.capacity);
         }
     };
     QuadTree.prototype.forEach = function (callback) {

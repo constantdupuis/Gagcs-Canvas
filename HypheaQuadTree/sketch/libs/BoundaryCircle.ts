@@ -23,14 +23,14 @@ class BoundaryCircle implements IBoundary {
    * @param p Point to check
    */
   contains(p: IPoint): boolean {
-    if (
-      p.x >= this.x &&
-      p.x <= this.x + this.w &&
-      p.y >= this.y &&
-      p.y <= this.y + this.h
-    ) {
-      return true;
-    }
+    // if (
+    //   p.x >= this.x &&
+    //   p.x <= this.x + this.w &&
+    //   p.y >= this.y &&
+    //   p.y <= this.y + this.h
+    // ) {
+    //   return true;
+    // }
     return false;
   }
 
@@ -38,15 +38,15 @@ class BoundaryCircle implements IBoundary {
    * Check if r intersects with this rectangle
    * @param r Rectangle to check intersection with
    */
-  intersects(r: BoundarySquare): boolean {
-    if (
-      r.x > this.x + this.w ||
-      r.y > this.y + this.h ||
-      r.x + r.w < this.x ||
-      r.y + r.h < this.y
-    ) {
-      return false;
-    }
+  intersects(r: BoundaryRectangle): boolean {
+    // if (
+    //   r.x > this.x + this.w ||
+    //   r.y > this.y + this.h ||
+    //   r.x + r.w < this.x ||
+    //   r.y + r.h < this.y
+    // ) {
+    //   return false;
+    // }
     return true;
   }
 }

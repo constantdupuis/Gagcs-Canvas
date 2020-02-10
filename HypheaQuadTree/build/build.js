@@ -9,48 +9,18 @@ var qtree;
 function setup() {
     createCanvas(windowWidth, windowHeight);
     background("#2D142C");
-    qtree = new QuadTree(new Boundary(20, 20, windowWidth - 40, windowHeight - 40), 8);
+    qtree = new QuadTree(new BoundarySquare(0, 0, windowWidth, windowHeight), 8);
 }
 function draw() {
     background("#2D142C");
-    qtree.forEach(function (e) {
-        rectMode(CORNER);
-        stroke("#801336");
-        noFill();
-        rect(e.boundary.x, e.boundary.y, e.boundary.w, e.boundary.h);
-        e.points.forEach(function (e) {
-            stroke("#C92A42");
-            fill("#C92A42");
-            circle(e.x, e.y, 5);
-        });
-    });
-    if (mouseIsPressed === true && mouseButton === RIGHT) {
-        rectMode(CORNER);
-        var range = new Boundary(mouseX - 40, mouseY - 20, 80, 40);
-        stroke("#EE4540");
-        noFill();
-        rect(range.x, range.y, range.w, range.h);
-        var found = qtree.query(range);
-        found.forEach(function (p) {
-            stroke("#8FB9A8");
-            fill("#8FB9A8");
-            circle(p.x, p.y, 5);
-        });
-    }
-    else if (mouseIsPressed === true && mouseButton === LEFT) {
-        for (var i = 0; i < 5; i++) {
-            qtree.insert(new Particle(mouseX + random(-5, 5), mouseY + random(-5, 5)));
-        }
-    }
 }
-var Boundary = (function () {
-    function Boundary(x, y, w, h) {
+var BoundaryCircle = (function () {
+    function BoundaryCircle(x, y, r) {
         this.x = x;
         this.y = y;
-        this.w = w;
-        this.h = h;
+        this.r = r;
     }
-    Boundary.prototype.contains = function (p) {
+    BoundaryCircle.prototype.contains = function (p) {
         if (p.x >= this.x &&
             p.x <= this.x + this.w &&
             p.y >= this.y &&
@@ -59,7 +29,7 @@ var Boundary = (function () {
         }
         return false;
     };
-    Boundary.prototype.intersects = function (r) {
+    BoundaryCircle.prototype.intersects = function (r) {
         if (r.x > this.x + this.w ||
             r.y > this.y + this.h ||
             r.x + r.w < this.x ||
@@ -68,7 +38,34 @@ var Boundary = (function () {
         }
         return true;
     };
-    return Boundary;
+    return BoundaryCircle;
+}());
+var BoundarySquare = (function () {
+    function BoundarySquare(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+    BoundarySquare.prototype.contains = function (p) {
+        if (p.x >= this.x &&
+            p.x <= this.x + this.w &&
+            p.y >= this.y &&
+            p.y <= this.y + this.h) {
+            return true;
+        }
+        return false;
+    };
+    BoundarySquare.prototype.intersects = function (r) {
+        if (r.x > this.x + this.w ||
+            r.y > this.y + this.h ||
+            r.x + r.w < this.x ||
+            r.y + r.h < this.y) {
+            return false;
+        }
+        return true;
+    };
+    return BoundarySquare;
 }());
 var QuadTree = (function () {
     function QuadTree(boundary, capacity) {
@@ -140,10 +137,10 @@ var QuadTree = (function () {
             var y = this.boundary.y;
             var newWidth = this.boundary.w / 2.0;
             var newHeight = this.boundary.h / 2.0;
-            this.topLeft = new QuadTree(new Boundary(x, y, newWidth, newHeight), this.capacity);
-            this.topRight = new QuadTree(new Boundary(x + newWidth, y, newWidth, newHeight), this.capacity);
-            this.bottomLeft = new QuadTree(new Boundary(x, y + newHeight, newWidth, newHeight), this.capacity);
-            this.bottomRight = new QuadTree(new Boundary(x + newWidth, y + newHeight, newWidth, newHeight), this.capacity);
+            this.topLeft = new QuadTree(new BoundarySquare(x, y, newWidth, newHeight), this.capacity);
+            this.topRight = new QuadTree(new BoundarySquare(x + newWidth, y, newWidth, newHeight), this.capacity);
+            this.bottomLeft = new QuadTree(new BoundarySquare(x, y + newHeight, newWidth, newHeight), this.capacity);
+            this.bottomRight = new QuadTree(new BoundarySquare(x + newWidth, y + newHeight, newWidth, newHeight), this.capacity);
         }
     };
     QuadTree.prototype.forEach = function (callback) {

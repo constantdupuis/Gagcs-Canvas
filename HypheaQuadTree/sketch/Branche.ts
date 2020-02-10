@@ -7,6 +7,7 @@ class Branch {
     rootParticle: Bud = null;
     lastParticle: Bud = null;
     qtree : QuadTree<Bud> = null;
+    fences : IBoundary = null;
     buds : Bud[] = [];
     childBranches : Branch[] = [];
   
@@ -16,10 +17,22 @@ class Branch {
     branchingFreq = 0;
     branchingLifeFactor = 0.5;
 
-    constructor( qtree: QuadTree<Bud>, posx :number, posy: number, dir : number, 
+    /**
+     * 
+     * @param qtree 
+     * @param fences 
+     * @param posx 
+     * @param posy 
+     * @param dir 
+     * @param life 
+     * @param branchingFreq 
+     * @param branchingLifeFactor 
+     */
+    constructor( qtree: QuadTree<Bud>, fences: IBoundary, posx :number, posy: number, dir : number, 
         life : number, branchingFreq : number, branchingLifeFactor : number)
     {
         this.qtree = qtree;
+        this.fences = fences;
         this.timeToLive = life;
         this.currentLife = 0;
         this.branchingFreq = branchingFreq;
@@ -32,6 +45,9 @@ class Branch {
         drawParticle(this.rootParticle);
     }
   
+    /**
+     * 
+     */
     grow() : boolean
     {
 
@@ -42,7 +58,7 @@ class Branch {
         {
             this.growing = false;
         }
-    
+
         if( !this.growing)
         {
             return false;
@@ -73,6 +89,7 @@ class Branch {
     
         // remove buds that are from the same branch of this new bud
         // this to avoid near bud i-of our own branch to avoid us to grow
+        // todo add case comments
         near = near.filter(p => { 
 
             // exclude buds from the same branche 
@@ -86,9 +103,9 @@ class Branch {
             }
             
             // excludes buds from direct parent branche
-            if( p.branch.parentBranch != null)
+            if( this.parentBranch != null)
             {
-                if( p.branch.parentBranch === this) return false;
+                if( p.branch === this.parentBranch) return false;
             }
              
             return true;
@@ -102,9 +119,9 @@ class Branch {
             let p = near[i];
             if( p5.Vector.dist(createVector(p.x, p.y),createVector(newPos.x, newPos.y) ) < 10.0)
             {
-            console.log("To close");
-            toClose = true;
-            break;
+                //console.log("To close");
+                toClose = true;
+                break;
             }
         }
     
@@ -122,9 +139,18 @@ class Branch {
     
         drawParticle(newParticle);
 
+        if(!this.fences.contains(newParticle))
+        {
+            this.growing = false;
+            return false;
+        }
+
         if( this.currentLife >= this.branchingFreq && this.currentLife % this.branchingFreq == 0)
         {
-            let newBranche = new Branch( this.qtree, newParticle.x, newParticle.y, newParticle.dir + QUARTER_PI, 
+            let dir = (random(6) < 3.0? -1.0: 1.0);
+            dir *= PI*1/4;
+            //dir += randomGaussian(0.0, PI*1/30);
+            let newBranche = new Branch( this.qtree, this.fences, newParticle.x, newParticle.y, newParticle.dir + dir, 
                 this.timeToLive * this.branchingLifeFactor, this.branchingFreq, this.branchingLifeFactor);
 
             this.childBranches.push( newBranche);

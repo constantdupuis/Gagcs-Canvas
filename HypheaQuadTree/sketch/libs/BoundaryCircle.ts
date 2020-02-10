@@ -23,14 +23,11 @@ class BoundaryCircle implements IBoundary {
    * @param p Point to check
    */
   contains(p: IPoint): boolean {
-    // if (
-    //   p.x >= this.x &&
-    //   p.x <= this.x + this.w &&
-    //   p.y >= this.y &&
-    //   p.y <= this.y + this.h
-    // ) {
-    //   return true;
-    // }
+    if (
+     p5.Vector.dist(createVector(p.x, p.y), createVector(this.x, this.y)) < this.r 
+    ) {
+      return true;
+    }
     return false;
   }
 

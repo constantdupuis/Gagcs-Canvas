@@ -1,9 +1,10 @@
 var Branch = (function () {
-    function Branch(qtree, posx, posy, dir, life, branchingFreq, branchingLifeFactor) {
+    function Branch(qtree, fences, posx, posy, dir, life, branchingFreq, branchingLifeFactor) {
         this.parentBranch = null;
         this.rootParticle = null;
         this.lastParticle = null;
         this.qtree = null;
+        this.fences = null;
         this.buds = [];
         this.childBranches = [];
         this.timeToLive = 100;
@@ -12,6 +13,7 @@ var Branch = (function () {
         this.branchingFreq = 0;
         this.branchingLifeFactor = 0.5;
         this.qtree = qtree;
+        this.fences = fences;
         this.timeToLive = life;
         this.currentLife = 0;
         this.branchingFreq = branchingFreq;
@@ -50,8 +52,8 @@ var Branch = (function () {
                 if (p.branch === cb)
                     return false;
             }
-            if (p.branch.parentBranch != null) {
-                if (p.branch.parentBranch === _this)
+            if (_this.parentBranch != null) {
+                if (p.branch === _this.parentBranch)
                     return false;
             }
             return true;
@@ -60,7 +62,6 @@ var Branch = (function () {
         for (var i = 0; i < near.length; i++) {
             var p = near[i];
             if (p5.Vector.dist(createVector(p.x, p.y), createVector(newPos.x, newPos.y)) < 10.0) {
-                console.log("To close");
                 toClose = true;
                 break;
             }
@@ -74,8 +75,14 @@ var Branch = (function () {
         this.qtree.insert(newParticle);
         this.buds.push(newParticle);
         drawParticle(newParticle);
+        if (!this.fences.contains(newParticle)) {
+            this.growing = false;
+            return false;
+        }
         if (this.currentLife >= this.branchingFreq && this.currentLife % this.branchingFreq == 0) {
-            var newBranche = new Branch(this.qtree, newParticle.x, newParticle.y, newParticle.dir + QUARTER_PI, this.timeToLive * this.branchingLifeFactor, this.branchingFreq, this.branchingLifeFactor);
+            var dir = (random(6) < 3.0 ? -1.0 : 1.0);
+            dir *= PI * 1 / 4;
+            var newBranche = new Branch(this.qtree, this.fences, newParticle.x, newParticle.y, newParticle.dir + dir, this.timeToLive * this.branchingLifeFactor, this.branchingFreq, this.branchingLifeFactor);
             this.childBranches.push(newBranche);
             newBranche.parentBranch = this;
         }
@@ -103,7 +110,14 @@ function setup() {
     createCanvas(windowWidth, windowHeight);
     background("#2D142C");
     qtree = new QuadTree(new BoundaryRectangle(0, 0, windowWidth, windowHeight), 8);
-    roots[0] = new Branch(qtree, windowWidth / 2.0, windowHeight / 2.0, -PI / 2.0, 100, 10, 0.5);
+    var fences = new BoundaryCircle(windowWidth / 2.0, windowHeight / 2.0, 400);
+    var life = 1000;
+    var branchingFreq = 10;
+    var branchingFActor = 1.0;
+    roots[0] = new Branch(qtree, fences, windowWidth * 0.45, windowHeight * 0.45, -PI * 3 / 4, life, branchingFreq, branchingFActor);
+    roots[1] = new Branch(qtree, fences, windowWidth * 0.55, windowHeight * .45, -PI * 1 / 4, life, branchingFreq, branchingFActor);
+    roots[2] = new Branch(qtree, fences, windowWidth * 0.45, windowHeight * .55, PI * 3 / 4, life, branchingFreq, branchingFActor);
+    roots[3] = new Branch(qtree, fences, windowWidth * 0.55, windowHeight * .55, PI * 1 / 4, life, branchingFreq, branchingFActor);
 }
 function draw() {
     roots.forEach(function (root) {
@@ -122,6 +136,9 @@ var BoundaryCircle = (function () {
         this.r = r;
     }
     BoundaryCircle.prototype.contains = function (p) {
+        if (p5.Vector.dist(createVector(p.x, p.y), createVector(this.x, this.y)) < this.r) {
+            return true;
+        }
         return false;
     };
     BoundaryCircle.prototype.intersects = function (r) {

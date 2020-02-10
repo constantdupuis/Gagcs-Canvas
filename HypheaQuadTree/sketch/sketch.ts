@@ -25,7 +25,22 @@ function setup() {
   // roots[2] = new Branch(qtree, windowWidth*0.55, windowHeight*0.4, PI, 100, 0.0, 0.0);  
 
   // branching test
-  roots[0] = new Branch(qtree, windowWidth/2.0, windowHeight/2.0, - PI/2.0, 100, 10, 0.5);
+  let fences = new BoundaryCircle(windowWidth/2.0, windowHeight/2.0, 400);
+  let life = 1000;
+  let branchingFreq = 10;
+  let branchingFActor = 1.0;
+  
+  roots[0] = new Branch(qtree, fences,  
+    windowWidth*0.45, windowHeight*0.45, - PI*3/4, life, branchingFreq, branchingFActor);
+
+  roots[1] = new Branch(qtree, fences,  
+    windowWidth*0.55, windowHeight*.45, - PI*1/4, life, branchingFreq, branchingFActor);
+  
+  roots[2] = new Branch(qtree, fences,  
+    windowWidth*0.45, windowHeight*.55, PI*3/4, life, branchingFreq, branchingFActor);
+
+  roots[3] = new Branch(qtree, fences,  
+    windowWidth*0.55, windowHeight*.55, PI*1/4, life, branchingFreq, branchingFActor);
 }
 
 /**

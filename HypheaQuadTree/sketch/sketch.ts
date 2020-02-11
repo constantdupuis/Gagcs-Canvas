@@ -1,3 +1,6 @@
+/**
+ *
+ */
 class Particle implements IPosisionable {
   x: number;
   y: number;
@@ -8,6 +11,7 @@ class Particle implements IPosisionable {
   }
 }
 
+///global QuadTree variable
 let qtree: QuadTree<Particle>;
 
 /**

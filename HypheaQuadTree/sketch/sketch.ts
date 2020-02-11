@@ -1,18 +1,9 @@
 /**
- *
+ * Global QuadTree object
  */
-class Particle implements IPosisionable {
-  x: number;
-  y: number;
+let qtree: QuadTree<Bud>;
 
-  constructor(x: number, y: number) {
-    this.x = x;
-    this.y = y;
-  }
-}
-
-///global QuadTree variable
-let qtree: QuadTree<Particle>;
+let roots: Branch[] = [];
 
 /**
  *
@@ -22,9 +13,64 @@ function setup() {
 
   background("#2D142C");
 
-  qtree = new QuadTree<Particle>(
-    new Boundary(20, 20, windowWidth - 40, windowHeight - 40),
+  qtree = new QuadTree<Bud>(
+    new BoundaryRectangle(0, 0, windowWidth, windowHeight),
     8
+  );
+
+  // simple stop growing test before collistion
+  // roots[0] = new Branch(qtree, windowWidth/2.0, windowHeight/2.0, - PI/2.0, 100, 0.0, 0.0);
+  // roots[1] = new Branch(qtree, windowWidth*0.45, windowHeight*0.45, 0.0, 100, 0.0, 0.0);
+  // roots[2] = new Branch(qtree, windowWidth*0.55, windowHeight*0.4, PI, 100, 0.0, 0.0);
+
+  // branching test
+  let fences = new BoundaryCircle(windowWidth / 2.0, windowHeight / 2.0, 400);
+  let life = 1000;
+  let branchingFreq = 10;
+  let branchingFActor = 1.0;
+
+  roots[0] = new Branch(
+    qtree,
+    fences,
+    windowWidth * 0.45,
+    windowHeight * 0.45,
+    (-PI * 3) / 4,
+    life,
+    branchingFreq,
+    branchingFActor
+  );
+
+  roots[1] = new Branch(
+    qtree,
+    fences,
+    windowWidth * 0.55,
+    windowHeight * 0.45,
+    (-PI * 1) / 4,
+    life,
+    branchingFreq,
+    branchingFActor
+  );
+
+  roots[2] = new Branch(
+    qtree,
+    fences,
+    windowWidth * 0.45,
+    windowHeight * 0.55,
+    (PI * 3) / 4,
+    life,
+    branchingFreq,
+    branchingFActor
+  );
+
+  roots[3] = new Branch(
+    qtree,
+    fences,
+    windowWidth * 0.55,
+    windowHeight * 0.55,
+    (PI * 1) / 4,
+    life,
+    branchingFreq,
+    branchingFActor
   );
 }
 
@@ -32,44 +78,15 @@ function setup() {
  *
  */
 function draw() {
-  background("#2D142C");
-
-  qtree.forEach((e: QuadTree<Particle>) => {
-    // draw boundaries
-    rectMode(CORNER);
-    stroke("#801336");
-    noFill();
-    rect(e.boundary.x, e.boundary.y, e.boundary.w, e.boundary.h);
-
-    // draw points
-    e.points.forEach((e: Particle) => {
-      stroke("#C92A42");
-      fill("#C92A42");
-      circle(e.x, e.y, 5);
-    });
+  //background("#2D142C");
+  roots.forEach(root => {
+    root.grow();
   });
+}
 
-  if (mouseIsPressed === true && mouseButton === RIGHT) {
-    rectMode(CORNER);
-    let range = new Boundary(mouseX - 40, mouseY - 20, 80, 40);
-
-    stroke("#EE4540");
-    noFill();
-    rect(range.x, range.y, range.w, range.h);
-
-    let found: Particle[] = qtree.query(range);
-
-    found.forEach((p: Particle) => {
-      stroke("#8FB9A8");
-      fill("#8FB9A8");
-      circle(p.x, p.y, 5);
-    });
-  } else if (mouseIsPressed === true && mouseButton === LEFT) {
-    // add points at mouse pos
-    for (let i = 0; i < 5; i++) {
-      qtree.insert(
-        new Particle(mouseX + random(-5, 5), mouseY + random(-5, 5))
-      );
-    }
-  }
+function drawParticle(p: Bud) {
+  //console.log(`Draw particle ${p.x}x${p.y} ${p.radius}`);
+  noStroke();
+  fill("white");
+  circle(p.x, p.y, p.radius * 2.0);
 }

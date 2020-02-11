@@ -27,7 +27,7 @@ function setup() {
   let fences = new BoundaryCircle(windowWidth / 2.0, windowHeight / 2.0, 400);
   let life = 1000;
   let branchingFreq = 10;
-  let branchingFActor = 1.0;
+  let branchingFactor = 1.0;
 
   roots[0] = new Branch(
     qtree,
@@ -37,7 +37,7 @@ function setup() {
     (-PI * 3) / 4,
     life,
     branchingFreq,
-    branchingFActor
+    branchingFactor
   );
 
   roots[1] = new Branch(
@@ -48,7 +48,7 @@ function setup() {
     (-PI * 1) / 4,
     life,
     branchingFreq,
-    branchingFActor
+    branchingFactor
   );
 
   roots[2] = new Branch(
@@ -59,7 +59,7 @@ function setup() {
     (PI * 3) / 4,
     life,
     branchingFreq,
-    branchingFActor
+    branchingFactor
   );
 
   roots[3] = new Branch(
@@ -70,7 +70,7 @@ function setup() {
     (PI * 1) / 4,
     life,
     branchingFreq,
-    branchingFActor
+    branchingFactor
   );
 }
 
@@ -87,6 +87,6 @@ function draw() {
 function drawParticle(p: Bud) {
   //console.log(`Draw particle ${p.x}x${p.y} ${p.radius}`);
   noStroke();
-  fill("white");
+  fill("orange");
   circle(p.x, p.y, p.radius * 2.0);
 }

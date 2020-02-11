@@ -1,7 +1,7 @@
 /**
  * Rectangle class
  */
-class Boundary implements IArea {
+class BoundaryRectangle implements IBoundary {
   x: number;
   y: number;
   w: number;
@@ -24,7 +24,7 @@ class Boundary implements IArea {
    * Check if a point in inside the rectangle, borders included
    * @param p Point to check
    */
-  contains(p: IPosisionable): boolean {
+  contains(p: IPoint): boolean {
     if (
       p.x >= this.x &&
       p.x <= this.x + this.w &&
@@ -40,7 +40,7 @@ class Boundary implements IArea {
    * Check if r intersects with this rectangle
    * @param r Rectangle to check intersection with
    */
-  intersects(r: Boundary): boolean {
+  intersects(r: BoundaryRectangle): boolean {
     if (
       r.x > this.x + this.w ||
       r.y > this.y + this.h ||

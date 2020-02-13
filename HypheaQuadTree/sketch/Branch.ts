@@ -13,8 +13,7 @@ class Branch {
   timeToLive: number = 100;
   currentLife: number = 0;
   growing = true;
-  branchingFreq = 0;
-  branchingLifeFactor = 0.5;
+  branchingStrategy: IBranchingStrategy;
 
   /**
    *
@@ -34,15 +33,13 @@ class Branch {
     posy: number,
     dir: number,
     life: number,
-    branchingFreq: number,
-    branchingLifeFactor: number
+    branchingStrategy: IBranchingStrategy
   ) {
     this.qtree = qtree;
     this.fences = fences;
     this.timeToLive = life;
     this.currentLife = 0;
-    this.branchingFreq = branchingFreq;
-    this.branchingLifeFactor = branchingLifeFactor;
+    this.branchingStrategy = branchingStrategy;
 
     this.rootParticle = new Bud(posx, posy, dir, this);
     this.lastParticle = null;
@@ -152,30 +149,31 @@ class Branch {
       return false;
     }
 
+    this.branchingStrategy.branching(this);
     /**
      * Create a child branch if it's time
      */
-    if (
-      this.currentLife >= this.branchingFreq &&
-      this.currentLife % this.branchingFreq == 0
-    ) {
-      let dir = random(6) < 3.0 ? -1.0 : 1.0;
-      dir *= (PI * 1) / 4;
-      dir += randomGaussian(0.0, (PI * 1) / 10);
-      let newBranche = new Branch(
-        this.qtree,
-        this.fences,
-        newParticle.x,
-        newParticle.y,
-        newParticle.dir + dir,
-        this.timeToLive * this.branchingLifeFactor,
-        this.branchingFreq,
-        this.branchingLifeFactor
-      );
+    // if (
+    //   this.currentLife >= this.branchingFreq &&
+    //   this.currentLife % this.branchingFreq == 0
+    // ) {
+    //   let dir = random(6) < 3.0 ? -1.0 : 1.0;
+    //   dir *= (PI * 1) / 4;
+    //   dir += randomGaussian(0.0, (PI * 1) / 10);
+    //   let newBranche = new Branch(
+    //     this.qtree,
+    //     this.fences,
+    //     this.lastParticle.x,
+    //     this.lastParticle.y,
+    //     this.lastParticle.dir + dir,
+    //     this.timeToLive * this.branchingLifeFactor,
+    //     this.branchingFreq,
+    //     this.branchingLifeFactor
+    //   );
 
-      this.childBranches.push(newBranche);
-      newBranche.parentBranch = this;
-    }
+    //   this.childBranches.push(newBranche);
+    //   newBranche.parentBranch = this;
+    // }
 
     this.currentLife++;
     return true;

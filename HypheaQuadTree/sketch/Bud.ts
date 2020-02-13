@@ -6,7 +6,7 @@ class Bud implements IPoint {
   y: number = 0.0;
   branch: Branch = null;
   dir: number;
-  radius: number = 5;
+  radius: number = 3;
 
   constructor(x: number, y: number, dir: number, parent: Branch) {
     this.x = x;

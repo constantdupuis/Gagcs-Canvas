@@ -26,8 +26,8 @@ function setup() {
   // branching test
   let fences = new BoundaryCircle(windowWidth / 2.0, windowHeight / 2.0, 400);
   let life = 1000;
-  let branchingFreq = 10;
-  let branchingFactor = 1.0;
+
+  let branchingStrategy = new AlternateBranching(10, 1.0);
 
   roots[0] = new Branch(
     qtree,
@@ -36,8 +36,7 @@ function setup() {
     windowHeight * 0.45,
     (-PI * 3) / 4,
     life,
-    branchingFreq,
-    branchingFactor
+    branchingStrategy
   );
 
   roots[1] = new Branch(
@@ -47,8 +46,7 @@ function setup() {
     windowHeight * 0.45,
     (-PI * 1) / 4,
     life,
-    branchingFreq,
-    branchingFactor
+    branchingStrategy
   );
 
   roots[2] = new Branch(
@@ -58,8 +56,7 @@ function setup() {
     windowHeight * 0.55,
     (PI * 3) / 4,
     life,
-    branchingFreq,
-    branchingFactor
+    branchingStrategy
   );
 
   roots[3] = new Branch(
@@ -69,8 +66,7 @@ function setup() {
     windowHeight * 0.55,
     (PI * 1) / 4,
     life,
-    branchingFreq,
-    branchingFactor
+    branchingStrategy
   );
 }
 

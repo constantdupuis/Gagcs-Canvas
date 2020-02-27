@@ -13,7 +13,7 @@ class Branch {
   timeToLive: number = 100;
   currentLife: number = 0;
   growing = true;
-  branchingStrategy: IBranchingStrategy;
+  branchingStrategy: BranchingStrategy;
 
   /**
    *
@@ -33,7 +33,7 @@ class Branch {
     posy: number,
     dir: number,
     life: number,
-    branchingStrategy: IBranchingStrategy
+    branchingStrategy: BranchingStrategy
   ) {
     this.qtree = qtree;
     this.fences = fences;

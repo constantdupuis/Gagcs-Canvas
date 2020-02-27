@@ -2,7 +2,7 @@
  * AlternateBranching strategy, it will branch every  life % x
  * Branche randomly either right or left only
  */
-class AlternateBranching implements IBranchingStrategy {
+class AlternateBranching implements BranchingStrategy {
   branchingFreq: number;
   branchingLifeFactor: number;
 

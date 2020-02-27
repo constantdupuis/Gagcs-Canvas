@@ -1,3 +1,3 @@
-interface IBranchingStrategy {
+interface BranchingStrategy {
   branching(parentBranch: Branch): void;
 }

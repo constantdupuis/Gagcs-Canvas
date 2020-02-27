@@ -84,6 +84,9 @@ function drawParticle(p: Bud) {
   //console.log(`Draw particle ${p.x}x${p.y} ${p.radius}`);
   noStroke();
 
-  fill("orange", 128);
+  let col = color("orange");
+  col.setAlpha(128);
+  fill(col);
+
   circle(p.x, p.y, p.radius * 2.0);
 }

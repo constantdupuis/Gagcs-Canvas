@@ -1,5 +1,5 @@
-class BasicBirth implements BirthStrategy {
-  birthRadius: number = 5.0; // initial branch raidus
+class DefaultBirthStrategy implements BirthStrategy {
+  birthRadius: number = 5.0; // initial branch radius
   branchTTL: number = 100; // initial branch time to live
 
   constructor(birthRadius: number, timeTolive: number) {

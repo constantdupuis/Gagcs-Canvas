@@ -3,8 +3,8 @@
  */
 class Branch {
   parentBranch: Branch = null;
-  rootParticle: Bud = null;
-  lastParticle: Bud = null;
+  rootBud: Bud = null;
+  lastBud: Bud = null;
   buds: Bud[] = [];
   generation: number = 0;
   childBranches: Branch[] = [];
@@ -19,11 +19,11 @@ class Branch {
   }
 
   grow(bud: Bud) {
-    if (this.rootParticle == null) {
-      this.rootParticle = bud;
+    if (this.rootBud == null) {
+      this.rootBud = bud;
     }
-    if (this.lastParticle == null) {
-      this.lastParticle = bud;
+    if (this.lastBud == null) {
+      this.lastBud = bud;
     }
     this.buds.push(bud);
   }

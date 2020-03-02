@@ -53,13 +53,38 @@ class Hyphea {
     // create a branche with a first bud at seed pos
     let seed = this.strategies.birth.birth(x, y, direction);
     this.seeds.push(seed);
-    this.qtree.insert(seed.rootParticle);
+    this.qtree.insert(seed.rootBud);
+    // TODO DRAW the new seed!?
   }
   /**
    *
    * @param draw - Drawing strategy to apply on growing buds
    */
-  drawGrowStep(draw: DrawingStrategy): void {}
+  drawGrowStep(draw: DrawingStrategy): boolean {
+    let ret = false;
+    let newBuds: Bud[] = [];
+
+    // grow Seeds (branches)
+    this.seeds.forEach(seed => {
+      if (this.strategies.growing.grow(seed, newBuds)) {
+        ret = true;
+      }
+    });
+
+    // TODO divide seeds (branches)
+
+    // TODO check fences
+
+    // TODO Check collision
+
+    // draw new buds and add them to quadtree
+    newBuds.forEach(bud => {
+      draw.draw(bud);
+      this.qtree.insert(bud);
+    });
+
+    return ret;
+  }
 
   /**
    * Grow all seeds without drawing it, only generate branches

@@ -26,29 +26,43 @@
  *
  */
 class Hyphea {
+  qtree: QuadTree<Bud>;
+  strategies: HypheaStrategies;
+  seeds: Branch[] = [];
+
   /**
    *
    * @constructor
-   * @param strategies - Set of strategies{@link Strategies} for Hyphea growing
+   * @param strategies - Set strategies for Hyphea growing
    */
-  constructor(strategies: Strategies) {}
+  constructor(strategies: HypheaStrategies) {
+    this.strategies = strategies;
+    this.qtree = new QuadTree<Bud>(
+      new BoundaryRectangle(0, 0, windowWidth, windowHeight),
+      8
+    );
+  }
+
   /**
-   * Set growing Strategies for current Hyphea instance
-   * @param strategies - Set Strategies to used to grow this instance of Hyphea, see each strategy interface for more info:
+   * Seed a Hyphea branch
+   * @param x X coordinate of seed
+   * @param y Y coordinate of seed
+   * @param direction branch initial direction
    */
-  setStrategies(strategies: Strategies): void {}
-  /**
-   *
-   */
-  addRoot(x: number, y: number): void {}
+  seed(x: number, y: number, direction: number): void {
+    // create a branche with a first bud at seed pos
+    let seed = this.strategies.birth.birth(x, y, direction);
+    this.seeds.push(seed);
+    this.qtree.insert(seed.rootParticle);
+  }
   /**
    *
    * @param draw - Drawing strategy to apply on growing buds
    */
-  growStep(draw: DrawingStrategy): void {}
+  drawGrowStep(draw: DrawingStrategy): void {}
 
   /**
-   * Grow all Hyphea without drawing it, only generate Buds
+   * Grow all seeds without drawing it, only generate branches
    */
   growAll(): void {}
 
@@ -56,5 +70,5 @@ class Hyphea {
    *
    * @param draw - Drawing strategy to apply on all generated buds
    */
-  drawAll(draw: DrawingStrategy): void {}
+  forEachDraw(drawer: DrawingStrategy): void {}
 }

@@ -1,7 +1,7 @@
 /**
  * Rectangle class
  */
-class BoundaryRectangle implements IBoundary {
+class BoundaryRectangle implements Boundary {
   x: number;
   y: number;
   w: number;
@@ -24,7 +24,7 @@ class BoundaryRectangle implements IBoundary {
    * Check if a point in inside the rectangle, borders included
    * @param p Point to check
    */
-  contains(p: IPoint): boolean {
+  contains(p: Point): boolean {
     if (
       p.x >= this.x &&
       p.x <= this.x + this.w &&

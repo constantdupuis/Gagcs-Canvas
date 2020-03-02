@@ -1,4 +1,4 @@
-interface IPoint {
+interface Point {
   x: number;
   y: number;
 }

@@ -3,7 +3,7 @@
  *
  *
  */
-interface Strategies {
+interface HypheaStrategies {
   birth: BirthStrategy;
   growing: GrowingStrategy;
   branching: DivisionStrategy;

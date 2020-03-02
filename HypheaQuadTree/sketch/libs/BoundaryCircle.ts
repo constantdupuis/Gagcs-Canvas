@@ -1,7 +1,7 @@
 /**
  * Boundary circle class
  */
-class BoundaryCircle implements IBoundary {
+class BoundaryCircle implements Boundary {
   x: number;
   y: number;
   r: number;
@@ -22,9 +22,10 @@ class BoundaryCircle implements IBoundary {
    * Check if a point in inside the rectangle, borders included
    * @param p Point to check
    */
-  contains(p: IPoint): boolean {
+  contains(p: Point): boolean {
     if (
-     p5.Vector.dist(createVector(p.x, p.y), createVector(this.x, this.y)) < this.r 
+      p5.Vector.dist(createVector(p.x, p.y), createVector(this.x, this.y)) <
+      this.r
     ) {
       return true;
     }

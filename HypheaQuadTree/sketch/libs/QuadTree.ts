@@ -1,15 +1,15 @@
 /**
  * Tpe definition for callback functions
  */
-type cbQuadTreeGen<T extends IPoint> = (qtree: QuadTree<T>) => void;
-type cbPosisionable = (p: IPoint) => void;
+type cbQuadTreeGen<T extends Point> = (qtree: QuadTree<T>) => void;
+type cbPosisionable = (p: Point) => void;
 type cbBoundaries = (r: BoundaryRectangle) => void;
 
 /**
  * Generique QuadTree
  */
-class QuadTree<T extends IPoint> {
-  points: IPoint[] = [];
+class QuadTree<T extends Point> {
+  points: Point[] = [];
   boundary: BoundaryRectangle;
   capacity: number = 4;
 

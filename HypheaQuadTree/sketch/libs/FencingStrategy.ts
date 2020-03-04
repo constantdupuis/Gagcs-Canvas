@@ -3,5 +3,5 @@
  * not allowed to grow again
  */
 interface FencingStrategy {
-  fence(bud: Bud): void;
+  fence(bud: Bud): boolean;
 }

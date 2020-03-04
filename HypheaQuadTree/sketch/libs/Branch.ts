@@ -18,13 +18,30 @@ class Branch {
     this.currentLife = 0;
   }
 
+  /**
+   *
+   * @param childBranch
+   */
+  addChildBranch(childBranch: Branch): void {
+    childBranch.parentBranch = this;
+    this.childBranches.push(childBranch);
+  }
+  /**
+   *
+   */
+  isGrowing(): boolean {
+    return this.growing;
+  }
+  /**
+   *
+   * @param bud
+   */
   grow(bud: Bud) {
+    bud.branch = this;
     if (this.rootBud == null) {
       this.rootBud = bud;
     }
-    if (this.lastBud == null) {
-      this.lastBud = bud;
-    }
     this.buds.push(bud);
+    this.lastBud = bud;
   }
 }

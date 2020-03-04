@@ -54,7 +54,7 @@ class Hyphea {
     let seed = this.strategies.birth.birth(x, y, direction);
     this.seeds.push(seed);
     this.qtree.insert(seed.rootBud);
-    // TODO DRAW the new seed!?
+    // TODO HOW to draw the new seed!?
   }
   /**
    *
@@ -66,21 +66,36 @@ class Hyphea {
 
     // grow Seeds (branches)
     this.seeds.forEach(seed => {
-      if (this.strategies.growing.grow(seed, newBuds)) {
-        ret = true;
+      // check colission with other branches, disable branch with colission detected
+      // check fences, disable branches leaving fences
+      if (seed.isGrowing()) {
+        this.strategies.division.divide(seed);
+        if (this.strategies.growing.grow(seed, newBuds)) {
+          ret = true;
+        }
       }
     });
 
-    // TODO divide seeds (branches)
-
-    // TODO check fences
-
-    // TODO Check collision
-
     // draw new buds and add them to quadtree
-    newBuds.forEach(bud => {
+    newBuds.forEach((bud, idx) => {
       draw.draw(bud);
       this.qtree.insert(bud);
+    });
+
+    return ret;
+  }
+
+  private growStep(draw: DrawingStrategy, newBuds: Bud[]): boolean {
+    // TODO review ciode :-(
+    let ret = false;
+
+    // grow Seeds (branches)
+    this.seeds.forEach(seed => {
+      // check colission with other branches, disable branch with colission detected
+      // check fences, disable branches leaving fences
+      if (this.strategies.growing.grow(seed, newBuds)) {
+        ret = true;
+      }
     });
 
     return ret;

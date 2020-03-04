@@ -3,9 +3,9 @@
  *
  *
  */
-interface HypheaStrategies {
+class HypheaStrategies {
   birth: BirthStrategy;
   growing: GrowingStrategy;
-  branching: DivisionStrategy;
+  division: DivisionStrategy;
   fencing: FencingStrategy;
 }

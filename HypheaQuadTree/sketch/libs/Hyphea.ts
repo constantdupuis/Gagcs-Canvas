@@ -51,7 +51,7 @@ class Hyphea {
    */
   seed(x: number, y: number, direction: number): void {
     // create a branche with a first bud at seed pos
-    let seed = this.strategies.birth.birth(x, y, direction);
+    let seed = this.strategies.birth.birth(x, y, -direction);
     this.seeds.push(seed);
     this.qtree.insert(seed.rootBud);
     // TODO HOW to draw the new seed!?

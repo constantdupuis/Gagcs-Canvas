@@ -21,8 +21,8 @@ function setup() {
   // set Growth strategy
   strategies.growing = new DefaultGrowingStrategy(
     2.0,
-    PI / 1.0,
-    0.05,
+    PI / 8.0,
+    1.0,
     new DampenedResizeStrategy(0.99, 2.0, 10.0)
   );
   strategies.division = new YDivisionStrategy();
@@ -30,7 +30,7 @@ function setup() {
   hyphea = new Hyphea(strategies);
 
   // seed
-  hyphea.seed(windowWidth / 2.0, windowHeight / 2.0, 0.0);
+  hyphea.seed(windowWidth / 2.0, windowHeight / 2.0, PI);
   console.log("<setup");
 }
 

@@ -9,7 +9,7 @@ class YDivisionStrategy implements DivisionStrategy {
       let rootBud = new Bud(
         lastBud.x,
         lastBud.y,
-        lastBud.dir + QUARTER_PI / 1.0,
+        lastBud.dir + HALF_PI,
         lastBud.radius
       );
       newBranch.grow(rootBud);
@@ -19,7 +19,7 @@ class YDivisionStrategy implements DivisionStrategy {
       rootBud = new Bud(
         lastBud.x,
         lastBud.y,
-        lastBud.dir - QUARTER_PI / 1.0,
+        lastBud.dir - HALF_PI,
         lastBud.radius
       );
       newBranch.grow(rootBud);

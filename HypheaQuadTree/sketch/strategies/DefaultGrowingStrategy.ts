@@ -50,13 +50,16 @@ class DefaultGrowingStrategy implements GrowingStrategy {
     if (branch.currentLife < branch.timeToLive) {
       // set new bud position from last bud position and growth direction
       let lastBud = branch.lastBud;
+      console.log(`Original dir ${lastBud.dir}`);
 
       //console.log(`Last Bud (${lastBud.x}x${lastBud.y})`);
+      let rg = randomGaussian(0.0, 1.0);
+      console.log(`RandomGaussian ${rg}`);
       let newDir =
         lastBud.dir * (1.0 - this.directionRandomnessWeight) +
-        randomGaussian(0.0, this.directionRandomness) *
-          this.directionRandomnessWeight;
+        rg * this.directionRandomness * this.directionRandomnessWeight;
 
+      console.log(`New dir ${newDir}`);
       // calculate new radius
       let newRadius = this.resizeStrategy.resize(lastBud.radius);
 

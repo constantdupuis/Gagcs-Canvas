@@ -3,25 +3,22 @@
  */
 class DefaultGrowingStrategy implements GrowingStrategy {
   growStep: number = 4.0; // distance between two buds
-  directionRandomness: number = PI / 8.0;
+
   directionRandomnessWeight: number = 0.5;
   resizeStrategy: ResizeStrategy;
 
   /**
    *
    * @param growStep Distance between two Buds
-   * @param directionRandomness Randomness direction in radian
    * @param directionRandomnessWeight Randomness direction weight
    * @param resizeStrategy Resize strategy
    */
   constructor(
     growStep: number,
-    directionRandomness: number,
     directionRandomnessWeight: number,
     resizeStrategy: ResizeStrategy
   ) {
     this.growStep = growStep;
-    this.directionRandomness = directionRandomness;
     this.directionRandomnessWeight = directionRandomnessWeight;
     this.resizeStrategy = resizeStrategy;
   }
@@ -53,11 +50,10 @@ class DefaultGrowingStrategy implements GrowingStrategy {
       console.log(`Original dir ${lastBud.dir}`);
 
       //console.log(`Last Bud (${lastBud.x}x${lastBud.y})`);
-      let rg = randomGaussian(0.0, 1.0);
+      let rg = randomGaussian(0.0, 0.4) * this.directionRandomnessWeight;
       console.log(`RandomGaussian ${rg}`);
-      let newDir =
-        lastBud.dir * (1.0 - this.directionRandomnessWeight) +
-        rg * this.directionRandomness * this.directionRandomnessWeight;
+
+      let newDir = lastBud.dir + rg;
 
       console.log(`New dir ${newDir}`);
       // calculate new radius

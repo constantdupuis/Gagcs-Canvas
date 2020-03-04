@@ -9,8 +9,8 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   background("#2D142C");
 
-  // randomSeed(sin(Date.now()) * Date.now() * 32153.13654);
-  randomSeed(1654.321654);
+  randomSeed(sin(Date.now()) * Date.now() * 32153.13654);
+  //randomSeed(1654.321654);
 
   // default draw strategy
   drawer = new DefaultDrawStrategy();
@@ -24,8 +24,7 @@ function setup() {
   // set Growth strategy
   strategies.growing = new DefaultGrowingStrategy(
     2.0,
-    PI / 8.0,
-    0.05,
+    0.04,
     new DampenedResizeStrategy(0.99, 2.0, 10.0)
   );
   strategies.division = new YDivisionStrategy();

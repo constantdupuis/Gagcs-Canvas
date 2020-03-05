@@ -8,7 +8,7 @@ class DefaultBirthStrategy implements BirthStrategy {
   }
 
   birth(x: number, y: number, direction: number): Branch {
-    let br = new Branch(this.branchTTL); // by default a new branch is generation 0 and has no parent branch
+    let br = new Branch(0, this.branchTTL); // by default a new branch is generation 0 and has no parent branch
     let bu = new Bud(x, y, direction, this.birthRadius);
     br.grow(bu);
     return br;

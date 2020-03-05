@@ -53,7 +53,7 @@ class Hyphea {
     // create a branche with a first bud at seed pos
     let seed = this.strategies.birth.birth(x, y, -direction);
     this.seeds.push(seed);
-    this.qtree.insert(seed.rootBud);
+    //this.qtree.insert(seed.rootBud);
     // TODO HOW to draw the new seed!?
   }
   /**
@@ -66,14 +66,7 @@ class Hyphea {
 
     // grow Seeds (branches)
     this.seeds.forEach(seed => {
-      // check colission with other branches, disable branch with colission detected
-      // check fences, disable branches leaving fences
-      if (seed.isGrowing()) {
-        this.strategies.division.divide(seed);
-        if (this.strategies.growing.grow(seed, newBuds)) {
-          ret = true;
-        }
-      }
+      ret = this.innerGrowStep(seed, newBuds);
     });
 
     // draw new buds and add them to quadtree
@@ -84,28 +77,107 @@ class Hyphea {
 
     return ret;
   }
-
-  private growStep(draw: DrawingStrategy, newBuds: Bud[]): boolean {
-    // TODO review ciode :-(
-    let ret = false;
-
+  /**
+   * Grow all seeds without drawing it, only generate branches
+   */
+  growAll(): void {
+    let newBuds: Bud[] = [];
     // grow Seeds (branches)
     this.seeds.forEach(seed => {
-      // check colission with other branches, disable branch with colission detected
-      // check fences, disable branches leaving fences
-      if (this.strategies.growing.grow(seed, newBuds)) {
+      this.innerGrowStep(seed, newBuds);
+    });
+  }
+  /**
+   *
+   * @param branch
+   * @param newBuds
+   */
+  private innerGrowStep(branch: Branch, newBuds: Bud[]): boolean {
+    let ret = false;
+
+    // grow the branch
+    if (branch.isGrowing()) {
+      // divide the branch
+      this.strategies.division.divide(branch);
+
+      // if it grow, check collision on last growth bud
+      if (this.strategies.growing.grow(branch)) {
+        newBuds.push(branch.lastBud);
+        this.checkCollision(branch);
+        this.qtree.insert(branch.lastBud);
+        // TODO: check fences, stop growing branches that will leave fences
         ret = true;
+      }
+    }
+
+    // grow sub branches
+    branch.childBranches.forEach(br => {
+      if (br.isGrowing()) {
+        ret = this.innerGrowStep(br, newBuds);
       }
     });
 
     return ret;
   }
-
   /**
-   * Grow all seeds without drawing it, only generate branches
+   *
+   * @param branch
    */
-  growAll(): void {}
+  private checkCollision(branch: Branch): void {
+    let newBud = branch.lastBud;
 
+    // get buds around the new bud
+    let near = this.qtree.query(
+      new BoundaryRectangle(newBud.x - 40, newBud.y - 40, 80, 80)
+    );
+
+    console.log(`Buds around ${near.length}`);
+
+    // exclude some buds
+    near = near.filter(p => {
+      // exclude buds from the same branche
+      if (p.branch === branch) {
+        console.log("Exclude point from this branche");
+        return false;
+      }
+
+      // excludes buds from child branches
+      for (let i = 0; i < branch.childBranches.length; i++) {
+        let childBranch = branch.childBranches[i];
+        if (p.branch === childBranch) {
+          console.log("Exclude point from child branche");
+          return false;
+        }
+      }
+
+      // excludes buds from direct parent branche
+      if (branch.parentBranch != null) {
+        if (p.branch === branch.parentBranch) {
+          console.log("Exclude point from parent branche");
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    console.log(`Buds around filtered ${near.length}`);
+
+    // check distance, if to close stop the branch growing
+    for (let i = 0; i < near.length; i++) {
+      let p = near[i];
+      if (
+        p5.Vector.dist(
+          createVector(p.x, p.y),
+          createVector(newBud.x, newBud.y)
+        ) < 5.0
+      ) {
+        console.log("Bud to close");
+        branch.setGrowing(false);
+        break;
+      }
+    }
+  }
   /**
    *
    * @param draw - Drawing strategy to apply on all generated buds

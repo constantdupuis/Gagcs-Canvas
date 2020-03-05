@@ -8,12 +8,14 @@ class Branch {
   buds: Bud[] = [];
   generation: number = 0;
   childBranches: Branch[] = [];
+  tags: string[] = [];
 
   timeToLive: number = 100;
   currentLife: number = 0;
   growing = true;
 
-  constructor(ttl: number) {
+  constructor(generation: number, ttl: number) {
+    this.generation = generation;
     this.timeToLive = ttl;
     this.currentLife = 0;
   }
@@ -31,6 +33,15 @@ class Branch {
    */
   isGrowing(): boolean {
     return this.growing;
+  }
+  /**
+   *
+   * @param isGrowing
+   */
+  setGrowing(isGrowing: boolean): boolean {
+    let previous = this.growing;
+    this.growing = isGrowing;
+    return previous;
   }
   /**
    *

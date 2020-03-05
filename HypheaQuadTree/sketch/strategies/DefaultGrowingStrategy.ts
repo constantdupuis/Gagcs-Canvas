@@ -29,33 +29,22 @@ class DefaultGrowingStrategy implements GrowingStrategy {
    * @param newBuds The list of new Buds (out)
    * @returns Return true is branch is still growing
    */
-  grow(branch: Branch, newBuds: Bud[]): boolean {
+  grow(branch: Branch): boolean {
     let ret: boolean = false;
-    // grow sub branches
-    branch.childBranches.forEach(subBranch => {
-      if (this.grow(subBranch, newBuds)) {
-        ret = true;
-      }
-    });
-
-    if (branch.currentLife >= branch.timeToLive) {
-      branch.growing = false;
-      return;
-    }
 
     // grow this branche
-    if (branch.currentLife < branch.timeToLive) {
+    if (branch.isGrowing()) {
       // set new bud position from last bud position and growth direction
       let lastBud = branch.lastBud;
-      console.log(`Original dir ${lastBud.dir}`);
+      //console.log(`Original dir ${lastBud.dir}`);
 
       //console.log(`Last Bud (${lastBud.x}x${lastBud.y})`);
       let rg = randomGaussian(0.0, 0.4) * this.directionRandomnessWeight;
-      console.log(`RandomGaussian ${rg}`);
+      //console.log(`RandomGaussian ${rg}`);
 
       let newDir = lastBud.dir + rg;
 
-      console.log(`New dir ${newDir}`);
+      //console.log(`New dir ${newDir}`);
       // calculate new radius
       let newRadius = this.resizeStrategy.resize(lastBud.radius);
 
@@ -70,13 +59,19 @@ class DefaultGrowingStrategy implements GrowingStrategy {
         newRadius
       );
 
+      // add new Bud to branch
       branch.grow(newBud);
 
-      // push it to the new Buds list
-      newBuds.push(newBud);
-      // increase the branche life
+      // increase the branche life, and check against time to live
       branch.currentLife++;
-      ret = true;
+      if (branch.currentLife >= branch.timeToLive) {
+        // console.log(
+        //   `Branch end of life reached ${branch.currentLife}  >= ${branch.timeToLive}`
+        // );
+        branch.setGrowing(false);
+      } else {
+        ret = true;
+      }
     }
 
     return ret;

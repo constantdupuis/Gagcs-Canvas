@@ -1,3 +1,3 @@
 interface GrowingStrategy {
-  grow(branch: Branch, newBuds: Bud[]): boolean;
+  grow(branch: Branch): boolean;
 }

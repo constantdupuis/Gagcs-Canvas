@@ -128,16 +128,16 @@ class Hyphea {
 
     // get buds around the new bud
     let near = this.qtree.query(
-      new BoundaryRectangle(newBud.x - 40, newBud.y - 40, 80, 80)
+      new BoundaryRectangle(newBud.x - 20, newBud.y - 20, 40, 40)
     );
 
-    console.log(`Buds around ${near.length}`);
+    //console.log(`Buds around ${near.length}`);
 
     // exclude some buds
     near = near.filter(p => {
       // exclude buds from the same branche
       if (p.branch === branch) {
-        console.log("Exclude point from this branche");
+        //console.log("Exclude point from this branche");
         return false;
       }
 
@@ -145,7 +145,7 @@ class Hyphea {
       for (let i = 0; i < branch.childBranches.length; i++) {
         let childBranch = branch.childBranches[i];
         if (p.branch === childBranch) {
-          console.log("Exclude point from child branche");
+          //console.log("Exclude point from child branche");
           return false;
         }
       }
@@ -153,15 +153,20 @@ class Hyphea {
       // excludes buds from direct parent branche
       if (branch.parentBranch != null) {
         if (p.branch === branch.parentBranch) {
-          console.log("Exclude point from parent branche");
+          //console.log("Exclude point from parent branche");
           return false;
+        }
+
+        for (let j = 0; j < branch.parentBranch.childBranches.length; j++) {
+          let br = branch.parentBranch.childBranches[j];
+          if (p.branch === br) return false;
         }
       }
 
       return true;
     });
 
-    console.log(`Buds around filtered ${near.length}`);
+    //console.log(`Buds around filtered ${near.length}`);
 
     // check distance, if to close stop the branch growing
     for (let i = 0; i < near.length; i++) {
@@ -170,7 +175,7 @@ class Hyphea {
         p5.Vector.dist(
           createVector(p.x, p.y),
           createVector(newBud.x, newBud.y)
-        ) < 5.0
+        ) < 15.0
       ) {
         console.log("Bud to close");
         branch.setGrowing(false);

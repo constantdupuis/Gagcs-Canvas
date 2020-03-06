@@ -19,15 +19,15 @@ function setup() {
   strategies = new HypheaStrategies();
 
   // set Birth strategy
-  strategies.birth = new DefaultBirthStrategy(7.0, 200);
+  strategies.birth = new DefaultBirthStrategy(3.0, 200);
 
   // set Growth strategy
   strategies.growing = new DefaultGrowingStrategy(
     2.0,
-    0.1,
+    0.2,
     new DampenedResizeStrategy(0.99, 2.0, 100.0)
   );
-  strategies.division = new YDivisionStrategy(50, 0.5);
+  strategies.division = new YDivisionStrategy(20, 0.5);
 
   hyphea = new Hyphea(strategies);
 

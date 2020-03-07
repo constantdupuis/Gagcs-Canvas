@@ -34,7 +34,7 @@ class DefaultGrowingStrategy implements GrowingStrategy {
 
     // grow this branche
     if (branch.isGrowing()) {
-      // set new bud position from last bud position and growth direction
+      // set new bud position from last bud position and growing direction
       let lastBud = branch.lastBud;
       //console.log(`Original dir ${lastBud.dir}`);
 

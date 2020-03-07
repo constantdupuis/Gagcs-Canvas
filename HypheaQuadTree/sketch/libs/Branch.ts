@@ -52,6 +52,7 @@ class Branch {
     if (this.rootBud == null) {
       this.rootBud = bud;
     }
+    bud.setIndex(this.buds.length);
     this.buds.push(bud);
     this.lastBud = bud;
   }

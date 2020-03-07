@@ -7,13 +7,16 @@ class Bud implements Point {
   branch: Branch = null;
   dir: number = 0.0;
   radius: number = 3;
+  index: number = 0;
 
   constructor(x: number, y: number, dir: number, radius: number) {
     this.x = x;
     this.y = y;
     this.dir = dir;
     this.radius = radius;
-    //this.branch = parent;
-    //console.log(`New Bud dir ${this.dir}`);
+  }
+
+  setIndex(index: number): void {
+    this.index = index;
   }
 }

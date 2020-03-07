@@ -39,7 +39,7 @@ class Hyphea {
     this.strategies = strategies;
     this.qtree = new QuadTree<Bud>(
       new BoundaryRectangle(0, 0, windowWidth, windowHeight),
-      8
+      16
     );
   }
 
@@ -141,6 +141,8 @@ class Hyphea {
         return false;
       }
 
+      //if (branch.buds.length >= 40) return true;
+
       // excludes buds from child branches
       for (let i = 0; i < branch.childBranches.length; i++) {
         let childBranch = branch.childBranches[i];
@@ -175,9 +177,9 @@ class Hyphea {
         p5.Vector.dist(
           createVector(p.x, p.y),
           createVector(newBud.x, newBud.y)
-        ) < 15.0
+        ) < 5.0
       ) {
-        console.log("Bud to close");
+        //console.log("Bud to close");
         branch.setGrowing(false);
         break;
       }

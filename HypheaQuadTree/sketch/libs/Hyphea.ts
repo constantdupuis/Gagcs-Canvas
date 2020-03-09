@@ -112,8 +112,8 @@ class Hyphea {
 
     // grow sub branches
     branch.childBranches.forEach(br => {
-      if (br.isGrowing()) {
-        ret = this.innerGrowStep(br, newBuds);
+      if (this.innerGrowStep(br, newBuds)) {
+        ret = true;
       }
     });
 
@@ -128,7 +128,7 @@ class Hyphea {
 
     // get buds around the new bud
     let near = this.qtree.query(
-      new BoundaryRectangle(newBud.x - 20, newBud.y - 20, 40, 40)
+      new BoundaryRectangle(newBud.x - 10, newBud.y - 10, 20, 20)
     );
 
     //console.log(`Buds around ${near.length}`);
@@ -177,7 +177,7 @@ class Hyphea {
         p5.Vector.dist(
           createVector(p.x, p.y),
           createVector(newBud.x, newBud.y)
-        ) < 5.0
+        ) < 10.0
       ) {
         //console.log("Bud to close");
         branch.setGrowing(false);

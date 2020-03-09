@@ -2,12 +2,18 @@
  *
  */
 class YDivisionStrategy implements DivisionStrategy {
-  private divisionThreshold: number = 20; // threshold os given in life time tick
+  private divisionThreshold: number = 20; // threshold os given in ratio between 0.0 and 1.0
   private newTimeToLiveRatio: number = 0.5; // this determine the life time ratio of child branches
+  private maxGeneration: number = 10;
 
-  constructor(divisionThreshold: number, newTimeToLiveRatio: number) {
+  constructor(
+    divisionThreshold: number,
+    newTimeToLiveRatio: number,
+    maxGeneration: number
+  ) {
     this.divisionThreshold = divisionThreshold;
     this.newTimeToLiveRatio = newTimeToLiveRatio;
+    this.maxGeneration = maxGeneration;
   }
   /**
    *
@@ -15,12 +21,22 @@ class YDivisionStrategy implements DivisionStrategy {
    */
   divide(parentBranch: Branch): boolean {
     let ret = false;
-    if (
-      parentBranch.currentLife > 0 &&
-      parentBranch.currentLife % this.divisionThreshold == 0
-    ) {
+
+    if (parentBranch.generation >= this.maxGeneration) {
+      console.log("Max generation reached.");
+      parentBranch.setGrowing(false);
+      return ret;
+    }
+
+    let step = ceil(parentBranch.timeToLive * this.divisionThreshold);
+
+    if (parentBranch.currentLife > 0 && parentBranch.currentLife % step == 0) {
       let lastBud = parentBranch.lastBud;
       let newTTL = parentBranch.timeToLive * this.newTimeToLiveRatio;
+      if (newTTL <= 5) {
+        console.log("New branche to small, I don't devide");
+        return ret;
+      }
 
       //console.log(`Spawn 2 branchs, TTL: ${newTTL}`);
 
@@ -28,7 +44,7 @@ class YDivisionStrategy implements DivisionStrategy {
       let rootBud = new Bud(
         lastBud.x,
         lastBud.y,
-        lastBud.dir + HALF_PI / 2.0,
+        lastBud.dir + HALF_PI / 1.0,
         lastBud.radius
       );
       newBranch.grow(rootBud);
@@ -38,11 +54,12 @@ class YDivisionStrategy implements DivisionStrategy {
       rootBud = new Bud(
         lastBud.x,
         lastBud.y,
-        lastBud.dir - HALF_PI / 2.0,
+        lastBud.dir - HALF_PI / 1.0,
         lastBud.radius
       );
       newBranch.grow(rootBud);
       parentBranch.addChildBranch(newBranch);
+
       ret = true;
     }
     return ret;

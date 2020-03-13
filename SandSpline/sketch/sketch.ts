@@ -1,3 +1,5 @@
+
+declare var interpolate: any;
 let nb_sections = 0;
 let margin = 0;
 let lineHeight = 0;
@@ -7,8 +9,7 @@ let yRandomVariance = 0;
 
 let drawCount = 0;
 let c: p5.Color;
-let anchors: p5.Vector[] = [];
-let splineControllers: SplineControllers[] = [];
+let points: any[] = [];
 
 /**
  * setup
@@ -25,15 +26,20 @@ function setup() {
   section_lenght = (windowWidth - (2 * margin)) / (nb_sections);
 
   yRandomVariance = 5.2;
-  drawCount = 500;
+  drawCount = 400;
 
   for (let i = 0; i < nb_sections + 1; i++) {
     let x1 = margin + (i * section_lenght);
-    let x2 = margin + ((i + 1) * section_lenght);
 
-    anchors.push(createVector(x1, lineHeight));
+    points.push([x1, lineHeight]);
+
+    // noStroke();
+    // fill("red");
+    // circle(x1, lineHeight, 10);
 
   }
+
+
 
   console.log("<setup");
 }
@@ -44,33 +50,29 @@ function setup() {
 function draw() {
 
   //background("white");
+  blendMode(MULTIPLY);
 
-  let c2 = color("#005698");
+  let c2 = color("#00FFFF");
   c2.setAlpha(5);
 
-  beginShape();
-
-  for (let i = 0; i < anchors.length; i++) {
-    let anchorA = anchors[i];
-    let randomWeight = i / anchors.length;
-
-    // stroke(c);
-    // noFill();
-    // strokeWeight(4);
-    // circle(anchorA.x, anchorA.y, 5);
-
-    stroke(c2);
-    noFill();
-    strokeWeight(5);
-    curveVertex(anchorA.x, anchorA.y);
-
-    anchorA.x += randomGaussian(0, yRandomVariance) * randomWeight / 4.0;
-    anchorA.y += randomGaussian(0, yRandomVariance) * randomWeight;
-
+  for (let t = 0.0; t < 1.0; t += 0.001) {
+    let x = interpolate(t, 2, points);
+    //console.log(x);
+    noStroke();
+    fill(c2);
+    circle(x[0], x[1], 2);
   }
-  endShape();
+
+  // todo move points
+  points.forEach((p) => {
+    p[0] += randomGaussian(0, 5.2);
+    p[1] += randomGaussian(0, 5.2);
+  })
 
 
   drawCount--;
-  if (drawCount == 0) noLoop();
+  if (drawCount == 0) {
+    noLoop();
+    console.log("done");
+  }
 }

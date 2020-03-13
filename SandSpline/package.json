@@ -1,0 +1,19 @@
+{
+  "name": "SandSpline",
+  "version": "0.1.0",
+  "description": "Sand Spline",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "run-p start-compile start-run",
+    "start-compile": "tsc --watch",
+    "start-run": "browser-sync start --server -w"
+  },
+  "homepage": "http://monotone.be",
+  "devDependencies": {
+    "@types/chroma-js": "^1.4.3",
+    "@types/p5": "^0.9.0",
+    "browser-sync": "^2.26.7",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^3.6.3"
+  }
+}
